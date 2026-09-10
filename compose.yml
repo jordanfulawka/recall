@@ -1,0 +1,16 @@
+services:
+  db:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      POSTGRES_PASSWORD: recall
+      POSTGRES_USER: recall
+      POSTGRES_DB: recall
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
