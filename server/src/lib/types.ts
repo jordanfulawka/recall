@@ -14,4 +14,10 @@ interface Problem {
   updated_at: string;
 }
 
-export type { Problem };
+interface User {
+  id: string;
+  username: string;
+  created_at: string;
+}
+
+export type { Problem, User };

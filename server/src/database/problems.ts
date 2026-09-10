@@ -1,4 +1,3 @@
-import type { Problem } from '../lib/types.ts';
 import pool from './pool.ts';
 
 async function getAllProblems() {

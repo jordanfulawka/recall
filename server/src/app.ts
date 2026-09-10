@@ -1,11 +1,14 @@
+import 'dotenv/config';
 import express from 'express';
-import problemRouter from './routes/problems.ts';
+import problemsRouter from './routes/problems.ts';
+import authRouter from './routes/auth.ts';
 
 const app = express();
 
 app.use(express.json());
 
-app.use('/problems', problemRouter);
+app.use('/api/v1/problems', problemsRouter);
+app.use('/api/v1/auth', authRouter);
 
 app.get('/', (req, res) => {
   res.json({ message: 'hewllo world' });

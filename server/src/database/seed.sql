@@ -1,6 +1,6 @@
 CREATE TABLE users (
   id uuid UNIQUE DEFAULT gen_random_uuid(),
-  name VARCHAR(255) UNIQUE NOT NULL,
+  username VARCHAR(255) UNIQUE NOT NULL,
   password_hash VARCHAR(255) NOT NULL,
   created_at TIMESTAMP DEFAULT NOW()
 );
