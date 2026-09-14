@@ -6,12 +6,26 @@ async function getAllProblems() {
   return result.rows;
 }
 
-async function createProblem(title: string, url: string, notes: string) {
+async function createProblem(
+  userId: string,
+  title: string,
+  url: string,
+  notes: string,
+  confidence: number,
+) {
   const text =
-    'INSERT INTO problems(title, url, notes) VALUES($1, $2, $3) RETURNING *';
-  const values = [title, url, notes];
+    'INSERT INTO problems(user_id, title, url, notes, confidence) VALUES($1, $2, $3, $4, $5) RETURNING *';
+  const values = [userId, title, url, notes, confidence];
   const result = await pool.query(text, values);
   return result.rows;
 }
 
-export { getAllProblems, createProblem };
+async function getProblemsByUserId(userId: string) {
+  const text = 'SELECT * FROM problems WHERE user_id = $1';
+  const values = [userId];
+
+  const result = await pool.query(text, values);
+  return result.rows;
+}
+
+export { getAllProblems, createProblem, getProblemsByUserId };

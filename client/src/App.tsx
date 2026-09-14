@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { AuthProvider } from './contexts/AuthProvider';
 
 function App() {
   const [username, setUsername] = useState('');

@@ -5,6 +5,8 @@ interface AuthContextProps {
   token: string | null;
   user: User | null;
   loading: boolean;
+  login: (token: string) => void;
+  logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextProps | null>(null);
@@ -28,7 +30,7 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const stored = localStorage.get('token');
+    const stored = localStorage.getItem('token');
     if (stored) {
       setToken(stored);
       setUser(decodeToken(stored));
@@ -48,7 +50,7 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
     setUser(null);
   }
   return (
-    <AuthContext.Provider value={{ token, user, loading }}>
+    <AuthContext.Provider value={{ token, user, loading, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

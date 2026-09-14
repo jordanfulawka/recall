@@ -1,3 +1,28 @@
 import type { NextFunction, Request, Response } from 'express';
+import jwt from 'jsonwebtoken';
 
-function httpAuth(req: Request, res: Response, next: NextFunction) {}
+function httpAuth(req: Request, res: Response, next: NextFunction) {
+  console.log(req.headers);
+  const token = req.headers.authorization?.split(' ')[1];
+
+  if (!token) {
+    return res.status(401).json({ error: 'Invalid token' });
+  }
+
+  const secret = process.env.JWT_SECRET;
+  if (!secret) {
+    return res.status(500).json({ error: 'No JWT Secret' });
+  }
+
+  try {
+    const decoded = jwt.verify(token, secret);
+    (req as any).user = decoded;
+  } catch (err) {
+    console.error(err);
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
+  next();
+}
+
+export { httpAuth };
