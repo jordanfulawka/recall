@@ -1,12 +1,15 @@
 import { useState } from 'react';
 import { login as apiLogin } from '../lib/api';
 import { useAuth } from '../contexts/AuthProvider';
+import { useNavigate } from 'react-router';
 
 function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const navigate = useNavigate();
 
   const { login } = useAuth();
 
@@ -16,6 +19,7 @@ function Login() {
     try {
       const { token } = await apiLogin(username, password);
       login(token);
+      navigate('/dashboard');
     } catch (err) {
       setError('Could not log you in');
     } finally {
