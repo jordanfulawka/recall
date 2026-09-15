@@ -12,17 +12,7 @@ import Add from './components/Add';
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <AuthProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route path='/login' element={<Login />} />
-          <Route path='dashboard' element={<Dashboard />}>
-            <Route path='due' element={<Due />} />
-            <Route path='all' element={<All />} />
-            <Route path='add' element={<Add />} />
-          </Route>
-        </Routes>
-        {/* <App /> */}
-      </BrowserRouter>
+      <App />
     </AuthProvider>
   </StrictMode>,
 );

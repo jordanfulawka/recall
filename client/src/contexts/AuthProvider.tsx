@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from 'react';
-import { User } from '../lib/types';
+import type { User } from '../lib/types';
 
 interface AuthContextProps {
   token: string | null;
