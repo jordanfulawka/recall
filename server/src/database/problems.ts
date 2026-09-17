@@ -32,6 +32,54 @@ async function createProblem(
   return result.rows[0];
 }
 
+async function reviewProblem(
+  problemId: string,
+  notes: string,
+  confidence: number,
+) {
+  const client = await pool.connect();
+
+  try {
+    await client.query('BEGIN');
+
+    const result1 = await client.query(
+      'SELECT review_interval_days FROM problems WHERE id = $1',
+      [problemId],
+    );
+
+    if (result1.rows.length === 0)
+      throw new Error('No problem found with this id');
+
+    const currentInterval = result1.rows[0]?.review_interval_days;
+    const { review_interval_days, next_review } = computeSchedule(
+      confidence,
+      currentInterval,
+    );
+
+    const result2 = await client.query(
+      `UPDATE problems
+      SET notes = $1, confidence = $2, review_interval_days = $3,
+        next_review = $4, updated_at = NOW(), last_reviewed = NOW()
+      WHERE id = $5
+      RETURNING *`,
+      [notes, confidence, review_interval_days, next_review, problemId],
+    );
+
+    await client.query(
+      `INSERT into REVIEWS(problem_id, confidence, notes) VALUES($1, $2, $3) RETURNING *`,
+      [problemId, confidence, notes],
+    );
+
+    await client.query('COMMIT');
+    return result2.rows[0];
+  } catch (err) {
+    await client.query('ROLLBACK');
+    throw err;
+  } finally {
+    client.release();
+  }
+}
+
 async function getProblemsByUserId(userId: string) {
   const text = 'SELECT * FROM problems WHERE user_id = $1';
   const values = [userId];
@@ -40,4 +88,4 @@ async function getProblemsByUserId(userId: string) {
   return result.rows;
 }
 
-export { getAllProblems, createProblem, getProblemsByUserId };
+export { getAllProblems, createProblem, reviewProblem, getProblemsByUserId };

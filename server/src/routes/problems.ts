@@ -1,5 +1,9 @@
 import express from 'express';
-import { createProblem, getProblemsByUserId } from '../database/problems.ts';
+import {
+  createProblem,
+  getProblemsByUserId,
+  reviewProblem,
+} from '../database/problems.ts';
 import { httpAuth } from '../middlewares/httpAuth.ts';
 
 const router = express.Router();
@@ -21,8 +25,22 @@ router.post('/', httpAuth, async (req, res) => {
   } catch (err) {
     console.error(err);
     return res
-      .json(500)
+      .status(500)
       .json({ error: 'there was an error uploading this problem' });
+  }
+});
+
+router.patch('/:id/review', httpAuth, async (req, res) => {
+  try {
+    const problemId = String(req.params.id);
+    const { confidence, notes } = req.body;
+    const reviewedProblem = await reviewProblem(problemId, notes, confidence);
+    return res.status(200).json({ reviewedProblem });
+  } catch (err) {
+    console.error(err);
+    return res
+      .status(500)
+      .json({ error: 'could not complete your review for this problem' });
   }
 });
 
