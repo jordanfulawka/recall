@@ -1,5 +1,8 @@
 import { useEffect, useState } from 'react';
 import problemTags from '../lib/problemTags';
+import { createProblem } from '../lib/api';
+import { useAuth } from '../contexts/AuthProvider';
+import { useNavigate } from 'react-router';
 
 const fieldStyles =
   'rounded-md border border-neutral-300 px-3 py-2 text-sm outline-none transition focus:border-neutral-900';
@@ -14,6 +17,9 @@ function Add() {
   const [confidence, setConfidence] = useState(3);
   const [tags, setTags] = useState<string[]>([]);
   const [notes, setNotes] = useState('');
+
+  const { token } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const date = new Date();
@@ -34,12 +40,27 @@ function Add() {
   }
 
   async function handleSubmit(e) {
-    e.preventDefault();
+    try {
+      e.preventDefault();
+      if (!token) return;
+      const newProblem = await createProblem(
+        token,
+        title,
+        url,
+        tags,
+        notes,
+        confidence,
+      );
+      console.log(newProblem);
+      navigate('/dashboard/all');
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   return (
     <div className='mx-auto w-full max-w-lg px-4 py-10'>
-      <form className='flex flex-col gap-5'>
+      <form className='flex flex-col gap-5' onSubmit={handleSubmit}>
         <div className='flex flex-col gap-1.5'>
           <label className={labelStyles} htmlFor='title'>
             Title
