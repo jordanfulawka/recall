@@ -10,7 +10,6 @@ CREATE TABLE problems (
   user_id uuid REFERENCES users(id) ON DELETE CASCADE,
   title VARCHAR(255) NOT NULL,
   url VARCHAR(500),
-  status VARCHAR(20) NOT NULL DEFAULT 'attempted' CHECK (status IN ('attempted', 'solved', 'solved_with_help', 'stuck')),
   tags TEXT[],
   notes TEXT,
   date_added TIMESTAMP DEFAULT NOW(),

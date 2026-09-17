@@ -11,7 +11,7 @@ function Add() {
   const [title, setTitle] = useState('');
   const [url, setUrl] = useState('');
   const [date, setDate] = useState('');
-  const [status, setStatus] = useState('Attempted');
+  const [confidence, setConfidence] = useState(3);
   const [tags, setTags] = useState<string[]>([]);
   const [notes, setNotes] = useState('');
 
@@ -47,6 +47,8 @@ function Add() {
           <input
             id='title'
             type='text'
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
             placeholder='Two Sum'
             className={fieldStyles}
           />
@@ -59,6 +61,8 @@ function Add() {
           <input
             id='url'
             type='text'
+            value={url}
+            onChange={(e) => setUrl(e.target.value)}
             placeholder='https://leetcode.com/problems/...'
             className={fieldStyles}
           />
@@ -79,20 +83,32 @@ function Add() {
           </div>
 
           <div className='flex flex-1 flex-col gap-1.5'>
-            <label className={labelStyles} htmlFor='status'>
-              Status
+            <label className={labelStyles} htmlFor='confidence'>
+              Confidence
             </label>
-            <select
-              id='status'
-              value={status}
-              onChange={(e) => setStatus(e.target.value)}
-              className={`${fieldStyles} bg-white`}
+            <div
+              id='confidence'
+              role='radiogroup'
+              aria-label='Confidence'
+              className='flex gap-1.5'
             >
-              <option value='Attempted'>Attempted</option>
-              <option value='Solved'>Solved</option>
-              <option value='Solved with help'>Solved with help</option>
-              <option value='Stuck'>Stuck</option>
-            </select>
+              {[1, 2, 3, 4, 5].map((value) => (
+                <button
+                  key={value}
+                  type='button'
+                  role='radio'
+                  aria-checked={confidence === value}
+                  onClick={() => setConfidence(value)}
+                  className={`flex h-9 flex-1 items-center justify-center rounded-md border text-sm transition ${
+                    confidence === value
+                      ? 'border-neutral-900 bg-neutral-900 text-white'
+                      : 'border-neutral-300 text-neutral-600 hover:border-neutral-900 hover:text-neutral-900'
+                  }`}
+                >
+                  {value}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
 

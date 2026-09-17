@@ -1,3 +1,4 @@
+import { computeSchedule } from '../lib/utils.ts';
 import pool from './pool.ts';
 
 async function getAllProblems() {
@@ -10,14 +11,25 @@ async function createProblem(
   userId: string,
   title: string,
   url: string,
+  tags: string[],
   notes: string,
   confidence: number,
 ) {
+  const { review_interval_days, next_review } = computeSchedule(confidence, 1);
   const text =
-    'INSERT INTO problems(user_id, title, url, notes, confidence) VALUES($1, $2, $3, $4, $5) RETURNING *';
-  const values = [userId, title, url, notes, confidence];
+    'INSERT INTO problems(user_id, title, url, tags, notes, confidence, next_review, review_interval_days) VALUES($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *';
+  const values = [
+    userId,
+    title,
+    url,
+    tags,
+    notes,
+    confidence,
+    next_review,
+    review_interval_days,
+  ];
   const result = await pool.query(text, values);
-  return result.rows;
+  return result.rows[0];
 }
 
 async function getProblemsByUserId(userId: string) {

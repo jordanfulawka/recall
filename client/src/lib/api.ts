@@ -16,4 +16,16 @@ async function login(username: string, password: string) {
   return response.json();
 }
 
+// async function addProblem(
+//   userId: string,
+//   title: string,
+//   url: string,
+//   tags: string[],
+//   notes: string,
+//   dateAdded: string,
+//   confidence: number,
+//   next_review: string,
+//   review_interval_days: number,
+// );
+
 export { login };

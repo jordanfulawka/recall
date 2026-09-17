@@ -4,14 +4,16 @@ import { httpAuth } from '../middlewares/httpAuth.ts';
 
 const router = express.Router();
 
+// creating a new problem for the first time
 router.post('/', httpAuth, async (req, res) => {
   try {
-    const { title, url, notes, confidence } = req.body;
+    const { title, url, tags, notes, confidence } = req.body;
     const userId = (req as any).user.id;
     const newProblem = await createProblem(
       userId,
       title,
       url,
+      tags,
       notes,
       confidence,
     );
