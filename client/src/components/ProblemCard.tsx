@@ -27,24 +27,13 @@ function formatDate(value?: string | null) {
 }
 
 function ProblemCard({ problem }: { problem: Problem }) {
-  const { title, url, confidence, tags, date_added, next_review } = problem;
+  const { title, confidence, tags, date_added, next_review } = problem;
   return (
-    <div className='flex flex-col gap-3 rounded-lg border border-neutral-200 bg-white p-4 shadow-sm transition hover:border-neutral-300 hover:shadow-md'>
+    <div className='flex flex-col gap-3 rounded-lg border border-neutral-200 bg-white p-4 shadow-sm transition hover:border-neutral-300 hover:shadow-md cursor-pointer hover:scale-105'>
       <div className='flex items-start justify-between gap-3'>
-        {url ? (
-          <a
-            href={url}
-            target='_blank'
-            rel='noreferrer'
-            className='text-sm font-semibold text-neutral-900 hover:underline'
-          >
-            {title}
-          </a>
-        ) : (
-          <span className='text-sm font-semibold text-neutral-900'>
-            {title}
-          </span>
-        )}
+        <span className='text-sm font-semibold text-neutral-900 hover:underline'>
+          {title}
+        </span>
 
         <span
           className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border text-xs font-semibold ${

@@ -3,9 +3,9 @@ import { AuthProvider } from './contexts/AuthProvider';
 import { BrowserRouter, Route, Routes } from 'react-router';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
-import Due from './components/Due';
-import All from './components/All';
-import Add from './components/Add';
+import Due from './pages/Due';
+import All from './pages/All';
+import Add from './pages/Add';
 
 function App() {
   return (

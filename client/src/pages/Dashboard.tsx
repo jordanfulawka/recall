@@ -19,13 +19,13 @@ function Dashboard() {
           </h1>
           <nav className='flex gap-4'>
             <NavLink to='/dashboard/due' className={navLinkStyles}>
-              Due
+              due
             </NavLink>
             <NavLink to='/dashboard/all' className={navLinkStyles}>
-              All
+              all
             </NavLink>
             <NavLink to='/dashboard/add' className={navLinkStyles}>
-              Add
+              add
             </NavLink>
           </nav>
         </div>

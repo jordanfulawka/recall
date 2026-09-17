@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import type { Problem } from '../lib/types';
 import { getProblems } from '../lib/api';
 import { useAuth } from '../contexts/AuthProvider';
-import ProblemCard from './ProblemCard';
+import ProblemCard from '../components/ProblemCard';
 
 function All() {
   const [problems, setProblems] = useState<Problem[]>([]);
@@ -24,7 +24,7 @@ function All() {
   }, []);
 
   return (
-    <div>
+    <div className='flex flex-col gap-5'>
       {problems &&
         problems?.map((problem) => (
           <ProblemCard problem={problem} key={problem.id} />

@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthProvider';
-import { getDueProblems, getProblems } from '../lib/api';
+import { getDueProblems } from '../lib/api';
 import type { Problem } from '../lib/types';
-import ProblemCard from './ProblemCard';
+import ProblemCard from '../components/ProblemCard';
 
 function Due() {
   const [dueProblems, setDueProblems] = useState<Problem[]>([]);
@@ -25,10 +25,13 @@ function Due() {
 
   return (
     <div>
-      {dueProblems &&
+      {dueProblems ? (
         dueProblems?.map((problem) => (
           <ProblemCard problem={problem} key={problem.id} />
-        ))}
+        ))
+      ) : (
+        <p>No problems to review!</p>
+      )}
     </div>
   );
 }
