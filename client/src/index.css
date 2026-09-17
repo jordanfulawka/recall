@@ -1,1 +1,14 @@
 @import 'tailwindcss';
+
+@theme {
+  --color-ink: #0d1b2a;
+  --color-prussian: #1b263b;
+  --color-dusk: #415a77;
+  --color-lavender: #778da9;
+  --color-alabaster: #e0e1dd;
+}
+
+body {
+  background-color: var(--color-ink);
+  color: var(--color-alabaster);
+}

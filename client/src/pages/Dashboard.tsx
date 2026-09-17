@@ -1,20 +1,18 @@
 import { NavLink, Outlet } from 'react-router';
 
 const navLinkStyles = ({ isActive }: { isActive: boolean }) =>
-  `text-sm transition ${
-    isActive
-      ? 'font-medium text-neutral-900'
-      : 'text-neutral-500 hover:text-neutral-900'
+  `text-lg transition ${
+    isActive ? 'font-medium text-alabaster' : 'text-lavender hover:text-alabaster'
   }`;
 
-const statStyles = 'text-sm text-neutral-500';
+const statStyles = 'text-sm text-lavender';
 
 function Dashboard() {
   return (
     <div>
-      <div className='flex items-center justify-between border-b border-neutral-200 px-4 py-3'>
+      <div className='flex items-center justify-between border-b border-dusk/40 px-4 py-3'>
         <div className='flex items-center gap-6'>
-          <h1 className='text-sm font-semibold tracking-wide text-neutral-900'>
+          <h1 className='text-xl font-semibold tracking-wide text-lavender'>
             recall
           </h1>
           <nav className='flex gap-4'>

@@ -5,10 +5,9 @@ import { useAuth } from '../contexts/AuthProvider';
 import { useNavigate } from 'react-router';
 
 const fieldStyles =
-  'rounded-md border border-neutral-300 px-3 py-2 text-sm outline-none transition focus:border-neutral-900';
+  'rounded-md border border-dusk bg-ink px-3 py-2 text-sm text-alabaster outline-none transition focus:border-lavender';
 
-const labelStyles =
-  'text-xs font-medium uppercase tracking-wide text-neutral-500';
+const labelStyles = 'text-xs font-medium uppercase tracking-wide text-lavender';
 
 function Add() {
   const [title, setTitle] = useState('');
@@ -49,7 +48,7 @@ function Add() {
   }
 
   return (
-    <div className='mx-auto w-full max-w-lg px-4 py-10'>
+    <div className='mx-auto w-full max-w-lg px-4 py-10 text-alabaster'>
       <form className='flex flex-col gap-5' onSubmit={handleSubmit}>
         <div className='flex flex-col gap-1.5'>
           <label className={labelStyles} htmlFor='title'>
@@ -98,8 +97,8 @@ function Add() {
                 onClick={() => setConfidence(value)}
                 className={`flex h-9 flex-1 items-center justify-center rounded-md border text-sm transition ${
                   confidence === value
-                    ? 'border-neutral-900 bg-neutral-900 text-white'
-                    : 'border-neutral-300 text-neutral-600 hover:border-neutral-900 hover:text-neutral-900'
+                    ? 'border-lavender bg-lavender text-ink'
+                    : 'border-dusk text-lavender hover:border-lavender hover:text-alabaster'
                 }`}
               >
                 {value}
@@ -118,8 +117,8 @@ function Add() {
                 key={problemTag}
                 className={`rounded-full border px-3 py-1 text-xs transition ${
                   tags.includes(problemTag)
-                    ? 'border-amber-700 bg-amber-700 text-white'
-                    : 'border-neutral-300 text-neutral-600 hover:border-neutral-900 hover:text-neutral-900'
+                    ? 'border-dusk bg-dusk text-alabaster'
+                    : 'border-dusk/60 text-lavender hover:border-lavender hover:text-alabaster'
                 }`}
               >
                 {problemTag}
@@ -145,13 +144,13 @@ function Add() {
         <div className='flex justify-end gap-2 pt-1'>
           <button
             type='button'
-            className='rounded-md px-4 py-2 text-sm text-neutral-500 transition hover:text-neutral-900'
+            className='rounded-md px-4 py-2 text-sm text-lavender transition hover:text-alabaster'
           >
             Cancel
           </button>
           <button
             type='submit'
-            className='rounded-md bg-neutral-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-neutral-700'
+            className='rounded-md bg-alabaster px-4 py-2 text-sm font-medium text-ink transition hover:bg-lavender'
           >
             Save
           </button>

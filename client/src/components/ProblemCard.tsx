@@ -1,3 +1,5 @@
+import { useNavigate } from 'react-router';
+
 interface Problem {
   id: string;
   title: string;
@@ -28,17 +30,22 @@ function formatDate(value?: string | null) {
 
 function ProblemCard({ problem }: { problem: Problem }) {
   const { title, confidence, tags, date_added, next_review } = problem;
+
+  const navigate = useNavigate();
+
   return (
-    <div className='flex flex-col gap-3 rounded-lg border border-neutral-200 bg-white p-4 shadow-sm transition hover:border-neutral-300 hover:shadow-md cursor-pointer hover:scale-105'>
+    <div
+      className='flex flex-col gap-3 rounded-lg border border-dusk/40 bg-prussian p-4 shadow-sm transition hover:border-lavender hover:shadow-md cursor-pointer hover:scale-105'
+      onClick={() => navigate(`/dashboard/review/${problem.id}`)}
+    >
       <div className='flex items-start justify-between gap-3'>
-        <span className='text-sm font-semibold text-neutral-900 hover:underline'>
+        <span className='text-sm font-semibold text-alabaster hover:underline'>
           {title}
         </span>
 
         <span
           className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border text-xs font-semibold ${
-            confidenceStyles[confidence] ??
-            'border-neutral-300 bg-neutral-100 text-neutral-600'
+            confidenceStyles[confidence] ?? 'border-dusk bg-dusk text-alabaster'
           }`}
           title={`Confidence: ${confidence}/5`}
         >
@@ -51,7 +58,7 @@ function ProblemCard({ problem }: { problem: Problem }) {
           {tags.map((tag) => (
             <span
               key={tag}
-              className='rounded-full border border-neutral-300 px-2 py-0.5 text-xs text-neutral-600'
+              className='rounded-full border border-dusk/60 px-2 py-0.5 text-xs text-lavender'
             >
               {tag}
             </span>
@@ -59,7 +66,7 @@ function ProblemCard({ problem }: { problem: Problem }) {
         </div>
       )}
 
-      <div className='flex items-center justify-between text-xs text-neutral-400'>
+      <div className='flex items-center justify-between text-xs text-lavender/70'>
         <span>Added {formatDate(date_added)}</span>
         {next_review && <span>Next review {formatDate(next_review)}</span>}
       </div>
