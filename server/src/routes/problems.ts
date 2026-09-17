@@ -1,6 +1,7 @@
 import express from 'express';
 import {
   createProblem,
+  getDueProblemsByUserId,
   getProblemsByUserId,
   reviewProblem,
 } from '../database/problems.ts';
@@ -30,6 +31,7 @@ router.post('/', httpAuth, async (req, res) => {
   }
 });
 
+// review problem
 router.patch('/:id/review', httpAuth, async (req, res) => {
   try {
     const problemId = String(req.params.id);
@@ -44,6 +46,7 @@ router.patch('/:id/review', httpAuth, async (req, res) => {
   }
 });
 
+// get all problems
 router.get('/', httpAuth, async (req, res) => {
   try {
     const userId = (req as any).user.id;
@@ -54,6 +57,19 @@ router.get('/', httpAuth, async (req, res) => {
     return res
       .status(500)
       .json({ error: 'there was an error fetching your problems' });
+  }
+});
+
+router.get('/due', httpAuth, async (req, res) => {
+  try {
+    const userId = (req as any).user.id;
+    const dueProblems = await getDueProblemsByUserId(userId);
+    return res.status(200).json({ dueProblems });
+  } catch (err) {
+    console.log(err);
+    return res
+      .status(500)
+      .json({ err: 'there was an error fetching due problems' });
   }
 });
 

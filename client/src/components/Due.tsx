@@ -1,5 +1,36 @@
+import { useEffect, useState } from 'react';
+import { useAuth } from '../contexts/AuthProvider';
+import { getDueProblems, getProblems } from '../lib/api';
+import type { Problem } from '../lib/types';
+import ProblemCard from './ProblemCard';
+
 function Due() {
-  return <div>due</div>;
+  const [dueProblems, setDueProblems] = useState<Problem[]>([]);
+
+  const { token } = useAuth();
+
+  useEffect(() => {
+    async function fetchDueProblems() {
+      try {
+        if (!token) return;
+        const { problems } = await getDueProblems(token);
+        console.log(problems);
+        setDueProblems(problems);
+      } catch (err) {
+        console.log(err);
+      }
+    }
+    fetchDueProblems();
+  }, []);
+
+  return (
+    <div>
+      {dueProblems &&
+        dueProblems?.map((problem) => (
+          <ProblemCard problem={problem} key={problem.id} />
+        ))}
+    </div>
+  );
 }
 
 export default Due;

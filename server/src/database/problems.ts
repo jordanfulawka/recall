@@ -88,4 +88,19 @@ async function getProblemsByUserId(userId: string) {
   return result.rows;
 }
 
-export { getAllProblems, createProblem, reviewProblem, getProblemsByUserId };
+async function getDueProblemsByUserId(userId: string) {
+  const text =
+    'SELECT * FROM problems WHERE user_id = $1 AND next_review <= current_date';
+  const values = [userId];
+
+  const result = await pool.query(text, values);
+  return result.rows;
+}
+
+export {
+  getAllProblems,
+  createProblem,
+  reviewProblem,
+  getProblemsByUserId,
+  getDueProblemsByUserId,
+};

@@ -59,4 +59,21 @@ async function getProblems(token: string) {
   return response.json();
 }
 
-export { login, createProblem, getProblems };
+async function getDueProblems(token: string) {
+  const response = await fetch(
+    `${import.meta.env.VITE_BASE_URL}/api/v1/problems/due`,
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
+  if (!response.ok) {
+    const data = await response.json();
+    throw new Error(data.error);
+  }
+  return response.json();
+}
+
+export { login, createProblem, getProblems, getDueProblems };

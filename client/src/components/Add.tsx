@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import problemTags from '../lib/problemTags';
 import { createProblem } from '../lib/api';
 import { useAuth } from '../contexts/AuthProvider';
@@ -13,22 +13,12 @@ const labelStyles =
 function Add() {
   const [title, setTitle] = useState('');
   const [url, setUrl] = useState('');
-  const [date, setDate] = useState('');
   const [confidence, setConfidence] = useState(3);
   const [tags, setTags] = useState<string[]>([]);
   const [notes, setNotes] = useState('');
 
   const { token } = useAuth();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const date = new Date();
-    const year = date.getFullYear();
-    const month = date.getMonth() + 1;
-    const paddedMonth = month.toString().length == 1 ? '0' + month : month;
-    const day = date.getDate();
-    setDate(`${year}-${paddedMonth}-${day}`);
-  }, []);
 
   function toggleTag(newTag: string) {
     const tagIncluded = tags.some((tag) => tag === newTag);
@@ -39,7 +29,7 @@ function Add() {
     }
   }
 
-  async function handleSubmit(e) {
+  async function handleSubmit(e: React.SubmitEvent) {
     try {
       e.preventDefault();
       if (!token) return;
@@ -89,47 +79,32 @@ function Add() {
           />
         </div>
 
-        <div className='flex gap-4'>
-          <div className='flex flex-1 flex-col gap-1.5'>
-            <label className={labelStyles} htmlFor='date'>
-              Date
-            </label>
-            <input
-              id='date'
-              type='date'
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
-              className={fieldStyles}
-            />
-          </div>
-
-          <div className='flex flex-1 flex-col gap-1.5'>
-            <label className={labelStyles} htmlFor='confidence'>
-              Confidence
-            </label>
-            <div
-              id='confidence'
-              role='radiogroup'
-              aria-label='Confidence'
-              className='flex gap-1.5'
-            >
-              {[1, 2, 3, 4, 5].map((value) => (
-                <button
-                  key={value}
-                  type='button'
-                  role='radio'
-                  aria-checked={confidence === value}
-                  onClick={() => setConfidence(value)}
-                  className={`flex h-9 flex-1 items-center justify-center rounded-md border text-sm transition ${
-                    confidence === value
-                      ? 'border-neutral-900 bg-neutral-900 text-white'
-                      : 'border-neutral-300 text-neutral-600 hover:border-neutral-900 hover:text-neutral-900'
-                  }`}
-                >
-                  {value}
-                </button>
-              ))}
-            </div>
+        <div className='flex flex-col gap-1.5'>
+          <label className={labelStyles} htmlFor='confidence'>
+            Confidence
+          </label>
+          <div
+            id='confidence'
+            role='radiogroup'
+            aria-label='Confidence'
+            className='flex gap-1.5'
+          >
+            {[1, 2, 3, 4, 5].map((value) => (
+              <button
+                key={value}
+                type='button'
+                role='radio'
+                aria-checked={confidence === value}
+                onClick={() => setConfidence(value)}
+                className={`flex h-9 flex-1 items-center justify-center rounded-md border text-sm transition ${
+                  confidence === value
+                    ? 'border-neutral-900 bg-neutral-900 text-white'
+                    : 'border-neutral-300 text-neutral-600 hover:border-neutral-900 hover:text-neutral-900'
+                }`}
+              >
+                {value}
+              </button>
+            ))}
           </div>
         </div>
 
