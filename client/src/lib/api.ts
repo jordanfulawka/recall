@@ -16,16 +16,47 @@ async function login(username: string, password: string) {
   return response.json();
 }
 
-// async function addProblem(
-//   userId: string,
-//   title: string,
-//   url: string,
-//   tags: string[],
-//   notes: string,
-//   dateAdded: string,
-//   confidence: number,
-//   next_review: string,
-//   review_interval_days: number,
-// );
+async function createProblem(
+  token: string,
+  title: string,
+  url: string,
+  tags: string[],
+  notes: string,
+  confidence: number,
+) {
+  const response = await fetch(
+    `${import.meta.env.VITE_BASE_URL}/api/v1/problems`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ title, url, tags, notes, confidence }),
+    },
+  );
+  if (!response.ok) {
+    const data = await response.json();
+    throw new Error(data.error);
+  }
+  return response.json();
+}
 
-export { login };
+async function getProblems(token: string) {
+  const response = await fetch(
+    `${import.meta.env.VITE_BASE_URL}/api/v1/problems`,
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
+  if (!response.ok) {
+    const data = await response.json();
+    throw new Error(data.error);
+  }
+  return response.json();
+}
+
+export { login, createProblem, getProblems };

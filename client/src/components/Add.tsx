@@ -33,9 +33,9 @@ function Add() {
     }
   }
 
-  useEffect(() => {
-    console.log(tags);
-  }, [tags]);
+  async function handleSubmit(e) {
+    e.preventDefault();
+  }
 
   return (
     <div className='mx-auto w-full max-w-lg px-4 py-10'>
