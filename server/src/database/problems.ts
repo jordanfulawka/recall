@@ -71,7 +71,7 @@ async function reviewProblem(
     );
 
     await client.query('COMMIT');
-    return result3.rows[0];
+    return result2.rows[0];
   } catch (err) {
     await client.query('ROLLBACK');
     throw err;

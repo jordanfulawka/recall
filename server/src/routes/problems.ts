@@ -8,6 +8,7 @@ import {
   updateProblemNotes,
 } from '../database/problems.ts';
 import { httpAuth } from '../middlewares/httpAuth.ts';
+import { getProblemReviews } from '../database/reviews.ts';
 
 const router = express.Router();
 
@@ -97,7 +98,6 @@ router.patch('/:id/notes', httpAuth, async (req, res) => {
 // review problem
 router.patch('/:id/review', httpAuth, async (req, res) => {
   try {
-    console.log('in the patch function');
     const problemId = String(req.params.id);
     const { confidence, notes } = req.body;
     const reviewedProblem = await reviewProblem(problemId, notes, confidence);
@@ -107,6 +107,17 @@ router.patch('/:id/review', httpAuth, async (req, res) => {
     return res
       .status(500)
       .json({ error: 'could not complete your review for this problem' });
+  }
+});
+
+router.get('/:id/review', httpAuth, async (req, res) => {
+  try {
+    const problemId = String(req.params.id);
+    const problemReviews = await getProblemReviews(problemId);
+    return res.status(200).json({ problemReviews });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: 'could not complete ' });
   }
 });
 

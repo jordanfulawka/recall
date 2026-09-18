@@ -5,6 +5,7 @@ import Due from './pages/Due';
 import All from './pages/All';
 import Add from './pages/Add';
 import ProblemReview from './pages/ProblemReview';
+import ProblemHistory from './pages/ProblemHistory';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
             <Route path='all' element={<All />} />
             <Route path='add' element={<Add />} />
             <Route path='review/:id' element={<ProblemReview />} />
+            <Route path='history/:id' element={<ProblemHistory />} />
           </Route>
         </Routes>
         {/* <App /> */}

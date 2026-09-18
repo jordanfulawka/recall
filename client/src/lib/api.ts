@@ -117,6 +117,23 @@ async function reviewProblem(
   return response.json();
 }
 
+async function getProblemReviews(token: string, problemId: string) {
+  const response = await fetch(
+    `${import.meta.env.VITE_BASE_URL}/api/v1/problems/${problemId}/review`,
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
+  if (!response.ok) {
+    const data = await response.json();
+    throw new Error(data.error);
+  }
+  return response.json();
+}
+
 async function updateProblemNotes(
   token: string,
   problemId: string,
@@ -148,4 +165,5 @@ export {
   getProblemById,
   reviewProblem,
   updateProblemNotes,
+  getProblemReviews,
 };

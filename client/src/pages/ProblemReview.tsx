@@ -58,6 +58,8 @@ function ProblemReview() {
   const [selectedRating, setSelectedRating] = useState<number | null>(null);
   const [isEditingNotes, setIsEditingNotes] = useState(false);
   const [notesDraft, setNotesDraft] = useState('');
+  const [reviewSubmitted, setReviewSubmitted] = useState(false);
+  const [reviewedProblem, setReviewedProblem] = useState<Problem | null>(null);
 
   const { token } = useAuth();
   const { id } = useParams();
@@ -127,12 +129,15 @@ function ProblemReview() {
       if (!token) return;
       if (typeof id !== 'string') return;
       if (!selectedRating) return;
-      const review = await reviewProblem(
+      const { reviewedProblem } = await reviewProblem(
         token,
         id,
         selectedRating,
         reviewNotes,
       );
+      setReviewedProblem(reviewedProblem);
+      console.log(reviewedProblem);
+      setReviewSubmitted(true);
     } catch (err) {
       console.log(err);
     }
@@ -233,35 +238,37 @@ function ProblemReview() {
 
         <div className='h-px bg-dusk/40' />
 
-        <div className='flex flex-col gap-2'>
-          <span className='text-xs font-medium uppercase tracking-wide text-lavender'>
-            How'd it go?
-          </span>
-          <div
-            role='radiogroup'
-            aria-label='Rate this review'
-            className='flex gap-2'
-          >
-            {[1, 2, 3, 4, 5].map((value) => (
-              <button
-                key={value}
-                type='button'
-                role='radio'
-                aria-checked={selectedRating === value}
-                onClick={() => setSelectedRating(value)}
-                className={`flex h-10 w-10 items-center justify-center rounded-full border text-sm font-semibold transition ${
-                  selectedRating === value
-                    ? ratingStyles[value].selected
-                    : ratingStyles[value].idle
-                }`}
-              >
-                {value}
-              </button>
-            ))}
+        {!reviewSubmitted && (
+          <div className='flex flex-col gap-2'>
+            <span className='text-xs font-medium uppercase tracking-wide text-lavender'>
+              How'd it go?
+            </span>
+            <div
+              role='radiogroup'
+              aria-label='Rate this review'
+              className='flex gap-2'
+            >
+              {[1, 2, 3, 4, 5].map((value) => (
+                <button
+                  key={value}
+                  type='button'
+                  role='radio'
+                  aria-checked={selectedRating === value}
+                  onClick={() => setSelectedRating(value)}
+                  className={`flex h-10 w-10 items-center justify-center rounded-full border text-sm font-semibold transition ${
+                    selectedRating === value
+                      ? ratingStyles[value].selected
+                      : ratingStyles[value].idle
+                  }`}
+                >
+                  {value}
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
-        {selectedRating && (
+        {selectedRating && !reviewSubmitted && (
           <div className='flex flex-col gap-3 rounded-lg border border-dusk/40 bg-ink/40 p-4'>
             <p className='text-sm text-lavender'>
               rated{' '}
@@ -286,6 +293,34 @@ function ProblemReview() {
                 save review
               </button>
             </form>
+          </div>
+        )}
+        {reviewedProblem && (
+          <div>
+            <div className='flex items-center gap-4 rounded-lg border border-emerald-700/40 bg-emerald-700/10 p-4'>
+              <span
+                className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full border text-sm font-semibold ${
+                  confidenceStyles[reviewedProblem.confidence] ??
+                  'border-dusk bg-dusk text-alabaster'
+                }`}
+              >
+                {reviewedProblem.confidence}
+              </span>
+              <div className='flex flex-col gap-0.5'>
+                <p className='text-sm font-medium text-alabaster'>
+                  Review saved
+                </p>
+                <p className='text-xs text-lavender'>
+                  Next review {formatDate(reviewedProblem.next_review)}
+                </p>
+              </div>
+            </div>
+            <div>
+              <button onClick={() => navigate(-1)}>back to list</button>
+              <button onClick={() => navigate(`/history/${id}`)}>
+                history
+              </button>
+            </div>
           </div>
         )}
 

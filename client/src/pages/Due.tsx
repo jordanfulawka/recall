@@ -25,7 +25,7 @@ function Due() {
 
   return (
     <div>
-      {dueProblems ? (
+      {dueProblems.length > 0 ? (
         dueProblems?.map((problem) => (
           <ProblemCard problem={problem} key={problem.id} />
         ))

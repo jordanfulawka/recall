@@ -19,4 +19,12 @@ interface Problem {
   updated_at: string;
 }
 
-export type { User, Problem };
+interface Review {
+  id: string;
+  problem_id: string;
+  confidence: number;
+  notes: string;
+  reviewed_at: string;
+}
+
+export type { User, Problem, Review };
