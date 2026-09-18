@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { Problem } from '../lib/types';
-import { getProblemById } from '../lib/api';
+import { getProblemById, reviewProblem } from '../lib/api';
 import { useAuth } from '../contexts/AuthProvider';
 import { useNavigate, useParams } from 'react-router';
 
@@ -10,6 +10,14 @@ const confidenceStyles: Record<number, string> = {
   3: 'border-amber-600 bg-amber-600 text-white',
   4: 'border-lime-600 bg-lime-600 text-white',
   5: 'border-emerald-700 bg-emerald-700 text-white',
+};
+
+const confidenceColours: Record<number, string> = {
+  1: 'text-red-700',
+  2: 'text-orange-600',
+  3: 'text-amber-600',
+  4: 'text-lime-600',
+  5: 'text-emerald-700',
 };
 
 const ratingStyles: Record<number, { idle: string; selected: string }> = {
@@ -46,6 +54,7 @@ function formatDate(value?: string | null) {
 
 function ProblemReview() {
   const [problem, setProblem] = useState<Problem | null>(null);
+  const [reviewNotes, setReviewNotes] = useState('');
   const [selectedRating, setSelectedRating] = useState<number | null>(null);
 
   const { token } = useAuth();
@@ -84,6 +93,24 @@ function ProblemReview() {
     last_reviewed,
     next_review,
   } = problem;
+
+  async function handleReviewSubmit(e: React.SubmitEvent) {
+    e.preventDefault();
+    try {
+      if (!token) return;
+      if (typeof id !== 'string') return;
+      if (!selectedRating) return;
+      const review = await reviewProblem(
+        token,
+        id,
+        selectedRating,
+        reviewNotes,
+      );
+      console.log(review);
+    } catch (err) {
+      console.log(err);
+    }
+  }
 
   return (
     <div className='mx-auto w-full max-w-2xl px-4 py-10'>
@@ -171,8 +198,28 @@ function ProblemReview() {
         </div>
 
         {selectedRating && (
-          <div className='border'>
-            <p>rated {selectedRating}</p>
+          <div className='flex flex-col gap-3 rounded-lg border border-dusk/40 bg-ink/40 p-4'>
+            <p className='text-sm text-lavender'>
+              rated{' '}
+              <span
+                className={`${confidenceColours[selectedRating]} text-xl font-bold`}
+              >
+                {selectedRating}
+              </span>
+            </p>
+            <form className='flex flex-col gap-3' onSubmit={handleReviewSubmit}>
+              <textarea
+                className='w-full resize-none rounded-md border border-dusk/60 bg-prussian px-3 py-2 text-sm text-alabaster placeholder:text-lavender/50 transition focus:border-lavender focus:outline-none'
+                rows={5}
+                placeholder='Anything to add for this solve?'
+              ></textarea>
+              <button
+                type='submit'
+                className='self-end rounded-md border border-emerald-700 bg-emerald-700 px-4 py-1.5 text-sm font-medium text-white transition hover:bg-emerald-600'
+              >
+                save review
+              </button>
+            </form>
           </div>
         )}
 

@@ -13,7 +13,7 @@ function Due() {
     async function fetchDueProblems() {
       try {
         if (!token) return;
-        const { problems } = await getDueProblems(token);
+        const { dueProblems: problems } = await getDueProblems(token);
         console.log(problems);
         setDueProblems(problems);
       } catch (err) {

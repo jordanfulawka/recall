@@ -93,4 +93,35 @@ async function getProblemById(token: string, problemId: string) {
   return response.json();
 }
 
-export { login, createProblem, getProblems, getDueProblems, getProblemById };
+async function reviewProblem(
+  token: string,
+  problemId: string,
+  confidence: number,
+  notes: string,
+) {
+  const response = await fetch(
+    `${import.meta.env.VITE_BASE_URL}/api/v1/problems/${problemId}/review`,
+    {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ confidence, notes }),
+    },
+  );
+  if (!response.ok) {
+    const data = await response.json();
+    throw new Error(data.error);
+  }
+  return response.json();
+}
+
+export {
+  login,
+  createProblem,
+  getProblems,
+  getDueProblems,
+  getProblemById,
+  reviewProblem,
+};
