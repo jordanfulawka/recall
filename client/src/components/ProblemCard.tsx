@@ -36,7 +36,7 @@ function ProblemCard({ problem }: { problem: Problem }) {
   return (
     <div
       className='flex flex-col gap-3 rounded-lg border border-dusk/40 bg-prussian p-4 shadow-sm transition hover:border-lavender hover:shadow-md cursor-pointer hover:scale-105'
-      onClick={() => navigate(`/dashboard/review/${problem.id}`)}
+      onClick={() => navigate(`/review/${problem.id}`)}
     >
       <div className='flex items-start justify-between gap-3'>
         <span className='text-sm font-semibold text-alabaster hover:underline'>

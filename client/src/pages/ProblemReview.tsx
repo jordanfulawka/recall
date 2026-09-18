@@ -1,10 +1,191 @@
 import { useEffect, useState } from 'react';
 import type { Problem } from '../lib/types';
+import { getProblemById } from '../lib/api';
+import { useAuth } from '../contexts/AuthProvider';
+import { useNavigate, useParams } from 'react-router';
+
+const confidenceStyles: Record<number, string> = {
+  1: 'border-red-700 bg-red-700 text-white',
+  2: 'border-orange-600 bg-orange-600 text-white',
+  3: 'border-amber-600 bg-amber-600 text-white',
+  4: 'border-lime-600 bg-lime-600 text-white',
+  5: 'border-emerald-700 bg-emerald-700 text-white',
+};
+
+const ratingStyles: Record<number, { idle: string; selected: string }> = {
+  1: {
+    idle: 'border-red-700 text-red-700 hover:bg-red-700 hover:text-white',
+    selected: 'border-red-700 bg-red-700 text-white',
+  },
+  2: {
+    idle: 'border-orange-600 text-orange-600 hover:bg-orange-600 hover:text-white',
+    selected: 'border-orange-600 bg-orange-600 text-white',
+  },
+  3: {
+    idle: 'border-amber-600 text-amber-600 hover:bg-amber-600 hover:text-white',
+    selected: 'border-amber-600 bg-amber-600 text-white',
+  },
+  4: {
+    idle: 'border-lime-600 text-lime-600 hover:bg-lime-600 hover:text-white',
+    selected: 'border-lime-600 bg-lime-600 text-white',
+  },
+  5: {
+    idle: 'border-emerald-700 text-emerald-700 hover:bg-emerald-700 hover:text-white',
+    selected: 'border-emerald-700 bg-emerald-700 text-white',
+  },
+};
+
+function formatDate(value?: string | null) {
+  if (!value) return null;
+  return new Date(value).toLocaleDateString(undefined, {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  });
+}
 
 function ProblemReview() {
   const [problem, setProblem] = useState<Problem | null>(null);
+  const [selectedRating, setSelectedRating] = useState<number | null>(null);
 
-  return <div></div>;
+  const { token } = useAuth();
+  const { id } = useParams();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    async function fetchProblem() {
+      try {
+        if (!token) return;
+        if (typeof id !== 'string') return;
+        const { problem } = await getProblemById(token, id);
+        setProblem(problem);
+      } catch (err) {
+        console.log(err);
+      }
+    }
+    fetchProblem();
+  }, [token, id]);
+
+  if (!problem) {
+    return (
+      <div className='mx-auto w-full max-w-2xl px-4 py-10 text-lavender'>
+        Loading...
+      </div>
+    );
+  }
+
+  const {
+    title,
+    url,
+    notes,
+    tags,
+    confidence,
+    date_added,
+    last_reviewed,
+    next_review,
+  } = problem;
+
+  return (
+    <div className='mx-auto w-full max-w-2xl px-4 py-10'>
+      <button
+        onClick={() => navigate(-1)}
+        className='mb-6 text-sm text-lavender transition hover:text-alabaster'
+      >
+        ← back
+      </button>
+
+      <div className='flex flex-col gap-5 rounded-lg border border-dusk/40 bg-prussian p-6 shadow-sm'>
+        <div className='flex items-start justify-between gap-4'>
+          <div className='flex flex-col gap-1.5'>
+            <h1 className='text-xl font-semibold text-alabaster'>{title}</h1>
+            {url && (
+              <a
+                href={url}
+                target='_blank'
+                rel='noreferrer'
+                className='text-sm text-lavender transition hover:text-alabaster hover:underline'
+              >
+                open problem ↗
+              </a>
+            )}
+          </div>
+
+          <span
+            className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full border text-sm font-semibold ${
+              confidenceStyles[confidence] ??
+              'border-dusk bg-dusk text-alabaster'
+            }`}
+            title={`Confidence: ${confidence}/5`}
+          >
+            {confidence}
+          </span>
+        </div>
+
+        <div className='flex flex-col gap-1.5 border-l-2 border-dusk pl-3'>
+          <p className='text-sm whitespace-pre-wrap text-alabaster'>
+            {notes || 'No notes yet.'}
+          </p>
+        </div>
+
+        {tags?.length > 0 && (
+          <div className='flex flex-wrap gap-1.5'>
+            {tags.map((tag) => (
+              <span
+                key={tag}
+                className='rounded-full border border-dusk/60 px-2.5 py-0.5 text-xs text-lavender'
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+        )}
+
+        <div className='h-px bg-dusk/40' />
+
+        <div className='flex flex-col gap-2'>
+          <span className='text-xs font-medium uppercase tracking-wide text-lavender'>
+            How'd it go?
+          </span>
+          <div
+            role='radiogroup'
+            aria-label='Rate this review'
+            className='flex gap-2'
+          >
+            {[1, 2, 3, 4, 5].map((value) => (
+              <button
+                key={value}
+                type='button'
+                role='radio'
+                aria-checked={selectedRating === value}
+                onClick={() => setSelectedRating(value)}
+                className={`flex h-10 w-10 items-center justify-center rounded-full border text-sm font-semibold transition ${
+                  selectedRating === value
+                    ? ratingStyles[value].selected
+                    : ratingStyles[value].idle
+                }`}
+              >
+                {value}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {selectedRating && (
+          <div className='border'>
+            <p>rated {selectedRating}</p>
+          </div>
+        )}
+
+        <div className='flex flex-wrap gap-x-6 gap-y-1 text-xs text-lavender/70'>
+          <span>Added {formatDate(date_added)}</span>
+          {last_reviewed && (
+            <span>Last reviewed {formatDate(last_reviewed)}</span>
+          )}
+          {next_review && <span>Next review {formatDate(next_review)}</span>}
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export default ProblemReview;

@@ -2,7 +2,6 @@ import type { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 
 function httpAuth(req: Request, res: Response, next: NextFunction) {
-  console.log(req.headers);
   const token = req.headers.authorization?.split(' ')[1];
 
   if (!token) {

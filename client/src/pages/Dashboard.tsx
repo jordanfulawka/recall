@@ -2,7 +2,9 @@ import { NavLink, Outlet } from 'react-router';
 
 const navLinkStyles = ({ isActive }: { isActive: boolean }) =>
   `text-lg transition ${
-    isActive ? 'font-medium text-alabaster' : 'text-lavender hover:text-alabaster'
+    isActive
+      ? 'font-medium text-alabaster'
+      : 'text-lavender hover:text-alabaster'
   }`;
 
 const statStyles = 'text-sm text-lavender';
@@ -16,13 +18,13 @@ function Dashboard() {
             recall
           </h1>
           <nav className='flex gap-4'>
-            <NavLink to='/dashboard/due' className={navLinkStyles}>
+            <NavLink to='/due' className={navLinkStyles}>
               due
             </NavLink>
-            <NavLink to='/dashboard/all' className={navLinkStyles}>
+            <NavLink to='/all' className={navLinkStyles}>
               all
             </NavLink>
-            <NavLink to='/dashboard/add' className={navLinkStyles}>
+            <NavLink to='/add' className={navLinkStyles}>
               add
             </NavLink>
           </nav>

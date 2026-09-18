@@ -97,10 +97,20 @@ async function getDueProblemsByUserId(userId: string) {
   return result.rows;
 }
 
+async function getProblemById(problemId: string) {
+  const text = 'SELECT * FROM problems WHERE id = $1';
+  const values = [problemId];
+
+  const result = await pool.query(text, values);
+  console.log(result);
+  return result.rows[0];
+}
+
 export {
   getAllProblems,
   createProblem,
   reviewProblem,
   getProblemsByUserId,
   getDueProblemsByUserId,
+  getProblemById,
 };
