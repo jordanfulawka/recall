@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { Problem } from '../lib/types';
-import { getProblemById, reviewProblem } from '../lib/api';
+import { getProblemById, reviewProblem, updateProblemNotes } from '../lib/api';
 import { useAuth } from '../contexts/AuthProvider';
 import { useNavigate, useParams } from 'react-router';
 
@@ -56,6 +56,8 @@ function ProblemReview() {
   const [problem, setProblem] = useState<Problem | null>(null);
   const [reviewNotes, setReviewNotes] = useState('');
   const [selectedRating, setSelectedRating] = useState<number | null>(null);
+  const [isEditingNotes, setIsEditingNotes] = useState(false);
+  const [notesDraft, setNotesDraft] = useState('');
 
   const { token } = useAuth();
   const { id } = useParams();
@@ -94,6 +96,31 @@ function ProblemReview() {
     next_review,
   } = problem;
 
+  function handleNotesEditStart() {
+    setNotesDraft(notes ?? '');
+    setIsEditingNotes(true);
+  }
+
+  function handleNotesCancel() {
+    setIsEditingNotes(false);
+  }
+
+  async function handleNotesSubmit() {
+    try {
+      if (!token) return;
+      if (typeof id !== 'string') return;
+      const { updatedProblem } = await updateProblemNotes(
+        token,
+        id,
+        notesDraft,
+      );
+      setProblem(updatedProblem);
+      setIsEditingNotes(false);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   async function handleReviewSubmit(e: React.SubmitEvent) {
     e.preventDefault();
     try {
@@ -106,7 +133,6 @@ function ProblemReview() {
         selectedRating,
         reviewNotes,
       );
-      console.log(review);
     } catch (err) {
       console.log(err);
     }
@@ -148,10 +174,48 @@ function ProblemReview() {
           </span>
         </div>
 
-        <div className='flex flex-col gap-1.5 border-l-2 border-dusk pl-3'>
-          <p className='text-sm whitespace-pre-wrap text-alabaster'>
-            {notes || 'No notes yet.'}
-          </p>
+        <div className='flex flex-col gap-2 border-l-2 border-dusk pl-3'>
+          {isEditingNotes ? (
+            <div className='flex flex-col gap-2'>
+              <textarea
+                autoFocus
+                className='w-full resize-none rounded-md border border-dusk/60 bg-prussian px-3 py-2 text-sm text-alabaster placeholder:text-lavender/50 transition focus:border-lavender focus:outline-none'
+                rows={4}
+                value={notesDraft}
+                onChange={(e) => setNotesDraft(e.target.value)}
+                placeholder='Add some notes...'
+              />
+              <div className='flex justify-end gap-2'>
+                <button
+                  type='button'
+                  onClick={handleNotesCancel}
+                  className='rounded-md border border-dusk/60 px-3 py-1 text-xs font-medium text-lavender transition hover:bg-dusk/20'
+                >
+                  cancel
+                </button>
+                <button
+                  type='button'
+                  onClick={handleNotesSubmit}
+                  className='rounded-md border border-emerald-700 bg-emerald-700 px-3 py-1 text-xs font-medium text-white transition hover:bg-emerald-600'
+                >
+                  submit
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className='flex items-start justify-between gap-3'>
+              <p className='text-sm whitespace-pre-wrap text-alabaster'>
+                {notes || 'No notes yet.'}
+              </p>
+              <button
+                type='button'
+                onClick={handleNotesEditStart}
+                className='shrink-0 text-xs text-lavender transition hover:text-alabaster hover:underline'
+              >
+                edit
+              </button>
+            </div>
+          )}
         </div>
 
         {tags?.length > 0 && (
@@ -211,6 +275,8 @@ function ProblemReview() {
               <textarea
                 className='w-full resize-none rounded-md border border-dusk/60 bg-prussian px-3 py-2 text-sm text-alabaster placeholder:text-lavender/50 transition focus:border-lavender focus:outline-none'
                 rows={5}
+                value={reviewNotes}
+                onChange={(e) => setReviewNotes(e.target.value)}
                 placeholder='Anything to add for this solve?'
               ></textarea>
               <button

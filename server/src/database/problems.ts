@@ -58,26 +58,35 @@ async function reviewProblem(
 
     const result2 = await client.query(
       `UPDATE problems
-      SET notes = $1, confidence = $2, review_interval_days = $3,
-        next_review = $4, updated_at = NOW(), last_reviewed = NOW()
-      WHERE id = $5
+      SET confidence = $1, review_interval_days = $2,
+        next_review = $3, updated_at = NOW(), last_reviewed = NOW()
+      WHERE id = $4
       RETURNING *`,
-      [notes, confidence, review_interval_days, next_review, problemId],
+      [confidence, review_interval_days, next_review, problemId],
     );
 
-    await client.query(
+    const result3 = await client.query(
       `INSERT into REVIEWS(problem_id, confidence, notes) VALUES($1, $2, $3) RETURNING *`,
       [problemId, confidence, notes],
     );
 
     await client.query('COMMIT');
-    return result2.rows[0];
+    return result3.rows[0];
   } catch (err) {
     await client.query('ROLLBACK');
     throw err;
   } finally {
     client.release();
   }
+}
+
+async function updateProblemNotes(problemId: string, notes: string) {
+  const text =
+    'UPDATE problems SET notes = $1, updated_at = NOW() WHERE id = $2 RETURNING *';
+  const values = [notes, problemId];
+
+  const result = await pool.query(text, values);
+  return result.rows[0];
 }
 
 async function getProblemsByUserId(userId: string) {
@@ -110,6 +119,7 @@ export {
   getAllProblems,
   createProblem,
   reviewProblem,
+  updateProblemNotes,
   getProblemsByUserId,
   getDueProblemsByUserId,
   getProblemById,

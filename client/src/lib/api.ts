@@ -117,6 +117,29 @@ async function reviewProblem(
   return response.json();
 }
 
+async function updateProblemNotes(
+  token: string,
+  problemId: string,
+  notes: string,
+) {
+  const response = await fetch(
+    `${import.meta.env.VITE_BASE_URL}/api/v1/problems/${problemId}/notes`,
+    {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ notes }),
+    },
+  );
+  if (!response.ok) {
+    const data = await response.json();
+    throw new Error(data.error);
+  }
+  return response.json();
+}
+
 export {
   login,
   createProblem,
@@ -124,4 +147,5 @@ export {
   getDueProblems,
   getProblemById,
   reviewProblem,
+  updateProblemNotes,
 };

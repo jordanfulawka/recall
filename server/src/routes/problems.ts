@@ -5,6 +5,7 @@ import {
   getProblemById,
   getProblemsByUserId,
   reviewProblem,
+  updateProblemNotes,
 } from '../database/problems.ts';
 import { httpAuth } from '../middlewares/httpAuth.ts';
 
@@ -78,9 +79,25 @@ router.get('/:id', httpAuth, async (req, res) => {
   }
 });
 
+// update notes only
+router.patch('/:id/notes', httpAuth, async (req, res) => {
+  try {
+    const problemId = String(req.params.id);
+    const { notes } = req.body;
+    const updatedProblem = await updateProblemNotes(problemId, notes);
+    return res.status(200).json({ updatedProblem });
+  } catch (err) {
+    console.error(err);
+    return res
+      .status(500)
+      .json({ error: 'could not update notes for this problem' });
+  }
+});
+
 // review problem
 router.patch('/:id/review', httpAuth, async (req, res) => {
   try {
+    console.log('in the patch function');
     const problemId = String(req.params.id);
     const { confidence, notes } = req.body;
     const reviewedProblem = await reviewProblem(problemId, notes, confidence);
