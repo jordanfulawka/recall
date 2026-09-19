@@ -5,11 +5,14 @@ CREATE TABLE users (
   created_at TIMESTAMP DEFAULT NOW()
 );
 
+CREATE TYPE difficulty AS ENUM('easy', 'medium', 'hard');
+
 CREATE TABLE problems (
   id uuid UNIQUE DEFAULT gen_random_uuid(),
   user_id uuid REFERENCES users(id) ON DELETE CASCADE,
   title VARCHAR(255) NOT NULL,
   url VARCHAR(500),
+  difficulty difficulty,
   tags TEXT[],
   notes TEXT,
   date_added TIMESTAMP DEFAULT NOW(),

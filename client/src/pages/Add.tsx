@@ -9,10 +9,56 @@ const fieldStyles =
 
 const labelStyles = 'text-xs font-medium uppercase tracking-wide text-lavender';
 
+const difficulties = ['easy', 'medium', 'hard'] as const;
+
+const ratingStyles: Record<number, { idle: string; selected: string }> = {
+  1: {
+    idle: 'border-red-700 text-red-700 hover:bg-red-700 hover:text-white',
+    selected: 'border-red-700 bg-red-700 text-white',
+  },
+  2: {
+    idle: 'border-orange-600 text-orange-600 hover:bg-orange-600 hover:text-white',
+    selected: 'border-orange-600 bg-orange-600 text-white',
+  },
+  3: {
+    idle: 'border-amber-600 text-amber-600 hover:bg-amber-600 hover:text-white',
+    selected: 'border-amber-600 bg-amber-600 text-white',
+  },
+  4: {
+    idle: 'border-lime-600 text-lime-600 hover:bg-lime-600 hover:text-white',
+    selected: 'border-lime-600 bg-lime-600 text-white',
+  },
+  5: {
+    idle: 'border-emerald-700 text-emerald-700 hover:bg-emerald-700 hover:text-white',
+    selected: 'border-emerald-700 bg-emerald-700 text-white',
+  },
+};
+
+const difficultyStyles: Record<
+  (typeof difficulties)[number],
+  { idle: string; selected: string }
+> = {
+  easy: {
+    idle: 'border-emerald-700 text-emerald-700 hover:bg-emerald-700 hover:text-white',
+    selected: 'border-emerald-700 bg-emerald-700 text-white',
+  },
+  medium: {
+    idle: 'border-amber-600 text-amber-600 hover:bg-amber-600 hover:text-white',
+    selected: 'border-amber-600 bg-amber-600 text-white',
+  },
+  hard: {
+    idle: 'border-red-700 text-red-700 hover:bg-red-700 hover:text-white',
+    selected: 'border-red-700 bg-red-700 text-white',
+  },
+};
+
 function Add() {
   const [title, setTitle] = useState('');
   const [url, setUrl] = useState('');
-  const [confidence, setConfidence] = useState(3);
+  const [confidence, setConfidence] = useState<number | null>(null);
+  const [difficulty, setDifficulty] = useState<
+    (typeof difficulties)[number] | null
+  >(null);
   const [tags, setTags] = useState<string[]>([]);
   const [notes, setNotes] = useState('');
 
@@ -32,6 +78,7 @@ function Add() {
     try {
       e.preventDefault();
       if (!token) return;
+      if (!confidence) return;
       const newProblem = await createProblem(
         token,
         title,
@@ -41,7 +88,7 @@ function Add() {
         confidence,
       );
       console.log(newProblem);
-      navigate('/dashboard/all');
+      navigate('/all');
     } catch (err) {
       console.error(err);
     }
@@ -95,10 +142,39 @@ function Add() {
                 role='radio'
                 aria-checked={confidence === value}
                 onClick={() => setConfidence(value)}
-                className={`flex h-9 flex-1 items-center justify-center rounded-md border text-sm transition ${
+                className={`flex h-9 flex-1 items-center justify-center rounded-md border text-sm font-semibold transition ${
                   confidence === value
-                    ? 'border-lavender bg-lavender text-ink'
-                    : 'border-dusk text-lavender hover:border-lavender hover:text-alabaster'
+                    ? ratingStyles[value].selected
+                    : ratingStyles[value].idle
+                }`}
+              >
+                {value}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className='flex flex-col gap-1.5'>
+          <label className={labelStyles} htmlFor='difficulty'>
+            Difficulty
+          </label>
+          <div
+            id='difficulty'
+            role='radiogroup'
+            aria-label='Difficulty'
+            className='flex gap-1.5'
+          >
+            {difficulties.map((value) => (
+              <button
+                key={value}
+                type='button'
+                role='radio'
+                aria-checked={difficulty === value}
+                onClick={() => setDifficulty(value)}
+                className={`flex h-9 flex-1 items-center justify-center rounded-md border text-sm font-semibold capitalize transition ${
+                  difficulty === value
+                    ? difficultyStyles[value].selected
+                    : difficultyStyles[value].idle
                 }`}
               >
                 {value}
@@ -145,6 +221,7 @@ function Add() {
           <button
             type='button'
             className='rounded-md px-4 py-2 text-sm text-lavender transition hover:text-alabaster'
+            onClick={() => navigate(-1)}
           >
             Cancel
           </button>

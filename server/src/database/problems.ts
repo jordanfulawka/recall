@@ -90,7 +90,7 @@ async function updateProblemNotes(problemId: string, notes: string) {
 }
 
 async function getProblemsByUserId(userId: string) {
-  const text = 'SELECT * FROM problems WHERE user_id = $1';
+  const text = 'SELECT * FROM problems WHERE user_id = $1 order by next_review';
   const values = [userId];
 
   const result = await pool.query(text, values);
