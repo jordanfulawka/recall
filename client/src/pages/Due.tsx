@@ -21,16 +21,24 @@ function Due() {
       }
     }
     fetchDueProblems();
-  }, []);
+  }, [token]);
 
   return (
-    <div>
+    <div className='flex flex-col gap-5'>
       {dueProblems.length > 0 ? (
-        dueProblems?.map((problem) => (
+        dueProblems.map((problem) => (
           <ProblemCard problem={problem} key={problem.id} />
         ))
       ) : (
-        <p>No problems to review!</p>
+        <div className='flex flex-col items-center gap-2 rounded-lg border border-dusk/40 bg-prussian py-16 text-center'>
+          <span className='text-3xl'>🎉</span>
+          <p className='text-sm font-medium text-alabaster'>
+            You're all caught up!
+          </p>
+          <p className='text-xs text-lavender/70'>
+            No problems are due for review right now.
+          </p>
+        </div>
       )}
     </div>
   );

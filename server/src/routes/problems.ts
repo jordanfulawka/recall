@@ -4,6 +4,7 @@ import {
   getDueProblemsByUserId,
   getProblemById,
   getProblemsByUserId,
+  getUserStats,
   reviewProblem,
   updateProblemNotes,
 } from '../database/problems.ts';
@@ -58,6 +59,17 @@ router.get('/due', httpAuth, async (req, res) => {
     return res
       .status(500)
       .json({ err: 'there was an error fetching due problems' });
+  }
+});
+
+router.get('/stats', httpAuth, async (req, res) => {
+  try {
+    const userId = (req as any).user.id;
+    const stats = await getUserStats(userId);
+    return res.status(200).json({ stats });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ err: 'there was an error fetching stats' });
   }
 });
 

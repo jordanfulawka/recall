@@ -37,7 +37,7 @@ function ProblemHistory() {
   return (
     <div className='mx-auto w-full max-w-2xl px-4 py-10'>
       <button
-        onClick={() => navigate(-1)}
+        onClick={() => navigate(-2)}
         className='mb-6 text-sm text-lavender transition hover:text-alabaster'
       >
         ← back

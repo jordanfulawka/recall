@@ -115,6 +115,16 @@ async function getProblemById(problemId: string) {
   return result.rows[0];
 }
 
+async function getUserStats(userId: string) {
+  const text = `
+  SELECT SUM(1) tracked_problems, SUM(CASE WHEN next_review::date <= current_date THEN 1 ELSE 0 END) due_problems FROM problems WHERE user_id = $1
+  `;
+  const values = [userId];
+
+  const result = await pool.query(text, values);
+  return result.rows[0];
+}
+
 export {
   getAllProblems,
   createProblem,
@@ -123,4 +133,5 @@ export {
   getProblemsByUserId,
   getDueProblemsByUserId,
   getProblemById,
+  getUserStats,
 };

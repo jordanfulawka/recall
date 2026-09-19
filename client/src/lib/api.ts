@@ -157,6 +157,23 @@ async function updateProblemNotes(
   return response.json();
 }
 
+async function getStats(token: string) {
+  const response = await fetch(
+    `${import.meta.env.VITE_BASE_URL}/api/v1/problems/stats`,
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
+  if (!response.ok) {
+    const data = await response.json();
+    throw new Error(data.error);
+  }
+  return response.json();
+}
+
 export {
   login,
   createProblem,
@@ -166,4 +183,5 @@ export {
   reviewProblem,
   updateProblemNotes,
   getProblemReviews,
+  getStats,
 };
