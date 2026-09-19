@@ -18,7 +18,12 @@ function Dashboard() {
   const [trackedProblems, setTrackedProblems] = useState<number | null>(null);
   const [dueProblems, setDueProblems] = useState<number | null>(null);
 
-  const { token } = useAuth();
+  const { token, user, logout } = useAuth();
+
+  function handleLogout() {
+    logout();
+    navigate('/login');
+  }
 
   useEffect(() => {
     if (match) navigate('/all');
@@ -57,10 +62,25 @@ function Dashboard() {
             </NavLink>
           </nav>
         </div>
-        <div className='flex gap-4'>
-          <span className={statStyles}>{dueProblems} due</span>
-          <span className={statStyles}>{trackedProblems} tracked</span>
-          <span className={statStyles}>12d streak</span>
+        <div className='flex items-center gap-4'>
+          <div className='flex gap-4'>
+            <span className={statStyles}>{dueProblems} due</span>
+            <span className={statStyles}>{trackedProblems} tracked</span>
+            {/* <span className={statStyles}>12d streak</span> */}
+          </div>
+          <div className='flex items-center gap-3 border-l border-dusk/40 pl-4'>
+            {user && (
+              <span className='text-sm font-medium text-alabaster'>
+                {user.username}
+              </span>
+            )}
+            <button
+              onClick={handleLogout}
+              className='rounded-md border border-dusk/40 px-2 py-1 text-sm text-lavender transition hover:border-dusk hover:text-alabaster'
+            >
+              logout
+            </button>
+          </div>
         </div>
       </div>
       <Outlet />

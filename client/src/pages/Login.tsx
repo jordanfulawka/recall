@@ -19,7 +19,7 @@ function Login() {
     try {
       const { token } = await apiLogin(username, password);
       login(token);
-      navigate('/dashboard');
+      navigate('/all');
     } catch (err) {
       setError('Could not log you in');
     } finally {
@@ -36,7 +36,10 @@ function Login() {
         <h1 className='text-xl font-semibold text-alabaster'>Log in</h1>
 
         <div className='space-y-1'>
-          <label htmlFor='username' className='block text-sm font-medium text-lavender'>
+          <label
+            htmlFor='username'
+            className='block text-sm font-medium text-lavender'
+          >
             Username
           </label>
           <input
@@ -49,7 +52,10 @@ function Login() {
         </div>
 
         <div className='space-y-1'>
-          <label htmlFor='password' className='block text-sm font-medium text-lavender'>
+          <label
+            htmlFor='password'
+            className='block text-sm font-medium text-lavender'
+          >
             Password
           </label>
           <input
