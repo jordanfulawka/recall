@@ -12,8 +12,4 @@ app.use(cors());
 app.use('/api/v1/problems', problemsRouter);
 app.use('/api/v1/auth', authRouter);
 
-app.get('/', (req, res) => {
-  res.json({ message: 'hewllo world' });
-});
-
 export default app;

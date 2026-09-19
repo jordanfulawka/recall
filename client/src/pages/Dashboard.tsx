@@ -68,7 +68,7 @@ function Dashboard() {
           <div className='flex gap-4'>
             <span className={statStyles}>{dueProblems} due</span>
             <span className={statStyles}>{trackedProblems} tracked</span>
-            <span className={statStyles}>{streak} streak</span>
+            <span className={statStyles}>{streak}d streak</span>
           </div>
           <div className='flex items-center gap-3 border-l border-dusk/40 pl-4'>
             {user && (
