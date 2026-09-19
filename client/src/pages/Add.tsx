@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import problemTags from '../lib/problemTags';
 import { createProblem } from '../lib/api';
 import { useAuth } from '../contexts/AuthProvider';
@@ -61,6 +61,8 @@ function Add() {
   >(null);
   const [tags, setTags] = useState<string[]>([]);
   const [notes, setNotes] = useState('');
+  const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const { token } = useAuth();
   const navigate = useNavigate();
@@ -74,12 +76,40 @@ function Add() {
     }
   }
 
+  useEffect(() => {
+    if (error === null) return;
+    const timeoutId = setTimeout(() => {
+      setError(null);
+    }, 3000);
+
+    return () => clearTimeout(timeoutId);
+  }, [error]);
+
   async function handleSubmit(e: React.SubmitEvent) {
     try {
       e.preventDefault();
       if (!token) return;
-      if (!confidence) return;
-      if (!difficulty) return;
+      if (!title) {
+        setError('Please enter a title');
+        return;
+      }
+      if (!url) {
+        setError('Please enter a URL');
+        return;
+      }
+      if (!confidence) {
+        setError('Please select a confidence level');
+        return;
+      }
+      if (!difficulty) {
+        setError('Please select a difficulty');
+        return;
+      }
+      if (tags.length === 0) {
+        setError('Please enter at least one tag');
+        return;
+      }
+      setUploading(true);
       const newProblem = await createProblem(
         token,
         title,
@@ -93,6 +123,9 @@ function Add() {
       navigate('/all');
     } catch (err) {
       console.error(err);
+      setError('There was an error submitting this problem');
+    } finally {
+      setUploading(false);
     }
   }
 
@@ -219,19 +252,25 @@ function Add() {
           />
         </div>
 
+        {error && <p className='text-red-500'>{error}</p>}
         <div className='flex justify-end gap-2 pt-1'>
           <button
             type='button'
-            className='rounded-md px-4 py-2 text-sm text-lavender transition hover:text-alabaster'
+            className='rounded-md px-4 py-2 text-sm text-lavender transition hover:text-alabaster disabled:pointer-events-none disabled:opacity-50'
             onClick={() => navigate(-1)}
+            disabled={uploading}
           >
             Cancel
           </button>
           <button
             type='submit'
-            className='rounded-md bg-alabaster px-4 py-2 text-sm font-medium text-ink transition hover:bg-lavender'
+            className='flex items-center gap-2 rounded-md bg-alabaster px-4 py-2 text-sm font-medium text-ink transition hover:bg-lavender disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-alabaster'
+            disabled={uploading}
           >
-            Save
+            {uploading && (
+              <span className='h-3.5 w-3.5 animate-spin rounded-full border-2 border-ink/30 border-t-ink' />
+            )}
+            {uploading ? 'Saving...' : 'Save'}
           </button>
         </div>
       </form>
