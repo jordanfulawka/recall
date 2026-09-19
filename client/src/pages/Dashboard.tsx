@@ -17,6 +17,7 @@ function Dashboard() {
   const navigate = useNavigate();
   const [trackedProblems, setTrackedProblems] = useState<number | null>(null);
   const [dueProblems, setDueProblems] = useState<number | null>(null);
+  const [streak, setStreak] = useState<number | null>(null);
 
   const { token, user, logout } = useAuth();
 
@@ -36,6 +37,7 @@ function Dashboard() {
         const { stats } = await getStats(token);
         setTrackedProblems(stats.tracked_problems);
         setDueProblems(stats.due_problems);
+        setStreak(stats.streak);
       } catch (err) {
         console.error(err);
       }
@@ -66,7 +68,7 @@ function Dashboard() {
           <div className='flex gap-4'>
             <span className={statStyles}>{dueProblems} due</span>
             <span className={statStyles}>{trackedProblems} tracked</span>
-            {/* <span className={statStyles}>12d streak</span> */}
+            <span className={statStyles}>{streak} streak</span>
           </div>
           <div className='flex items-center gap-3 border-l border-dusk/40 pl-4'>
             {user && (

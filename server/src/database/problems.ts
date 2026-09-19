@@ -115,6 +115,54 @@ async function getProblemById(problemId: string) {
   return result.rows[0];
 }
 
+async function getUserActivityDates(userId: string) {
+  const text = `
+    SELECT DISTINCT activity_date FROM (
+      SELECT reviewed_at::date AS activity_date
+      FROM reviews
+      JOIN problems on problems.id = reviews.problem_id
+      WHERE problems.user_id = $1
+      UNION
+      SELECT date_added::date as activity_date
+      FROM problems
+      WHERE user_id = $1
+    ) AS activity
+    ORDER BY activity_date DESC
+  `;
+  const values = [userId];
+
+  const result = await pool.query(text, values);
+  return result.rows.map((row) => row.activity_date);
+}
+
+function computeStreak(dates: Date[]) {
+  if (dates.length === 0) return 0;
+
+  const isSameDay = (a: Date, b: Date) => a.toDateString() === b.toDateString();
+  const subtractDays = (d: Date, n: number) => {
+    const copy = new Date(d);
+    copy.setDate(copy.getDate() - n);
+    return copy;
+  };
+
+  let expected = new Date();
+  expected.setHours(0, 0, 0, 0);
+  if (!isSameDay(dates[0], expected)) {
+    expected = subtractDays(expected, 1);
+  }
+
+  let streak = 0;
+  for (const date of dates) {
+    if (isSameDay(date, expected)) {
+      streak++;
+      expected = subtractDays(expected, 1);
+    } else if (date < expected) {
+      break;
+    }
+  }
+  return streak;
+}
+
 async function getUserStats(userId: string) {
   const text = `
   SELECT SUM(1) tracked_problems, SUM(CASE WHEN next_review::date <= current_date THEN 1 ELSE 0 END) due_problems FROM problems WHERE user_id = $1
@@ -122,7 +170,9 @@ async function getUserStats(userId: string) {
   const values = [userId];
 
   const result = await pool.query(text, values);
-  return result.rows[0];
+  const activityDates = await getUserActivityDates(userId);
+  const streak = computeStreak(activityDates);
+  return { ...result.rows[0], streak };
 }
 
 export {
