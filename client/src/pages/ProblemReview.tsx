@@ -1,6 +1,11 @@
 import { useEffect, useState } from 'react';
 import type { Problem } from '../lib/types';
-import { getProblemById, reviewProblem, updateProblemNotes } from '../lib/api';
+import {
+  deleteProblem,
+  getProblemById,
+  reviewProblem,
+  updateProblemNotes,
+} from '../lib/api';
 import { useAuth } from '../contexts/AuthProvider';
 import { useNavigate, useParams } from 'react-router';
 
@@ -66,6 +71,8 @@ function ProblemReview() {
   const [notesDraft, setNotesDraft] = useState('');
   const [reviewSubmitted, setReviewSubmitted] = useState(false);
   const [reviewedProblem, setReviewedProblem] = useState<Problem | null>(null);
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   const { token } = useAuth();
   const { id } = useParams();
@@ -130,6 +137,19 @@ function ProblemReview() {
     }
   }
 
+  async function handleDelete() {
+    try {
+      if (!token) return;
+      if (typeof id !== 'string') return;
+      setDeleting(true);
+      await deleteProblem(token, id);
+      navigate('/all');
+    } catch (err) {
+      console.log(err);
+      setDeleting(false);
+    }
+  }
+
   async function handleReviewSubmit(e: React.SubmitEvent) {
     e.preventDefault();
     try {
@@ -152,12 +172,44 @@ function ProblemReview() {
 
   return (
     <div className='mx-auto w-full max-w-2xl px-4 py-10'>
-      <button
-        onClick={() => navigate(-1)}
-        className='mb-6 text-sm text-lavender transition hover:text-alabaster'
-      >
-        ← back
-      </button>
+      <div className='mb-6 flex items-center justify-between'>
+        <button
+          onClick={() => navigate(-1)}
+          className='text-sm text-lavender transition hover:text-alabaster'
+        >
+          ← back
+        </button>
+
+        {confirmingDelete ? (
+          <div className='flex items-center gap-2'>
+            <span className='text-sm text-lavender'>Delete this problem?</span>
+            <button
+              type='button'
+              onClick={() => setConfirmingDelete(false)}
+              disabled={deleting}
+              className='rounded-md border border-dusk/60 px-3 py-1 text-xs font-medium text-lavender transition hover:bg-dusk/20 disabled:opacity-50'
+            >
+              cancel
+            </button>
+            <button
+              type='button'
+              onClick={handleDelete}
+              disabled={deleting}
+              className='rounded-md border border-red-700 bg-red-700 px-3 py-1 text-xs font-medium text-white transition hover:bg-red-600 disabled:opacity-50'
+            >
+              {deleting ? 'deleting...' : 'confirm delete'}
+            </button>
+          </div>
+        ) : (
+          <button
+            type='button'
+            onClick={() => setConfirmingDelete(true)}
+            className='text-sm text-red-500 transition hover:text-red-400'
+          >
+            delete
+          </button>
+        )}
+      </div>
 
       <div className='flex flex-col gap-5 rounded-lg border border-dusk/40 bg-prussian p-6 shadow-sm'>
         <div className='flex items-start justify-between gap-4'>

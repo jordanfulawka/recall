@@ -1,6 +1,7 @@
 import express from 'express';
 import {
   createProblem,
+  deleteProblem,
   getDueProblemsByUserId,
   getProblemById,
   getProblemsByUserId,
@@ -76,7 +77,6 @@ router.get('/stats', httpAuth, async (req, res) => {
 
 router.get('/:id', httpAuth, async (req, res) => {
   try {
-    console.log('in the api function');
     const problemId = req.params.id;
     if (typeof problemId !== 'string') {
       console.log(typeof problemId);
@@ -90,6 +90,23 @@ router.get('/:id', httpAuth, async (req, res) => {
     return res
       .status(500)
       .json({ error: 'there was an error fetching this problem' });
+  }
+});
+
+router.delete('/:id', httpAuth, async (req, res) => {
+  try {
+    const problemId = req.params.id;
+    if (typeof problemId !== 'string') {
+      return res
+        .status(500)
+        .json({ error: 'there was an error with your delete request' });
+    }
+    const result = await deleteProblem(problemId);
+    return res.status(200).json({ result });
+  } catch (err) {
+    return res
+      .status(500)
+      .json({ error: 'there was an error with your delete request' });
   }
 });
 

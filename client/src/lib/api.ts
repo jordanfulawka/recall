@@ -193,6 +193,24 @@ async function getStats(token: string) {
   return response.json();
 }
 
+async function deleteProblem(token: string, problemId: string) {
+  const response = await fetch(
+    `${import.meta.env.VITE_BASE_URL}/api/v1/problems/${problemId}`,
+    {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
+  if (!response.ok) {
+    const data = await response.json();
+    throw new Error(data.error);
+  }
+  return response.json();
+}
+
 export {
   login,
   register,
@@ -204,4 +222,5 @@ export {
   updateProblemNotes,
   getProblemReviews,
   getStats,
+  deleteProblem,
 };

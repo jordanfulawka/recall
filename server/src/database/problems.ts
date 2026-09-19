@@ -177,6 +177,14 @@ async function getUserStats(userId: string) {
   return { ...result.rows[0], streak };
 }
 
+async function deleteProblem(problemId: string) {
+  const text = `DELETE FROM problems WHERE id = $1`;
+  const values = [problemId];
+
+  const result = await pool.query(text, values);
+  return result.rowCount;
+}
+
 export {
   getAllProblems,
   createProblem,
@@ -186,4 +194,5 @@ export {
   getDueProblemsByUserId,
   getProblemById,
   getUserStats,
+  deleteProblem,
 };
