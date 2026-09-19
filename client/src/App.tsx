@@ -6,6 +6,7 @@ import All from './pages/All';
 import Add from './pages/Add';
 import ProblemReview from './pages/ProblemReview';
 import ProblemHistory from './pages/ProblemHistory';
+import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
   return (
@@ -13,12 +14,14 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path='/login' element={<Login />} />
-          <Route path='/' element={<Dashboard />}>
-            <Route path='due' element={<Due />} />
-            <Route path='all' element={<All />} />
-            <Route path='add' element={<Add />} />
-            <Route path='review/:id' element={<ProblemReview />} />
-            <Route path='history/:id' element={<ProblemHistory />} />
+          <Route element={<ProtectedRoute />}>
+            <Route path='/' element={<Dashboard />}>
+              <Route path='due' element={<Due />} />
+              <Route path='all' element={<All />} />
+              <Route path='add' element={<Add />} />
+              <Route path='review/:id' element={<ProblemReview />} />
+              <Route path='history/:id' element={<ProblemHistory />} />
+            </Route>
           </Route>
         </Routes>
         {/* <App /> */}
