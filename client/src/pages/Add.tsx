@@ -79,10 +79,12 @@ function Add() {
       e.preventDefault();
       if (!token) return;
       if (!confidence) return;
+      if (!difficulty) return;
       const newProblem = await createProblem(
         token,
         title,
         url,
+        difficulty,
         tags,
         notes,
         confidence,

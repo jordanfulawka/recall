@@ -38,6 +38,7 @@ async function createProblem(
   token: string,
   title: string,
   url: string,
+  difficulty: string,
   tags: string[],
   notes: string,
   confidence: number,
@@ -50,7 +51,7 @@ async function createProblem(
         'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({ title, url, tags, notes, confidence }),
+      body: JSON.stringify({ title, url, difficulty, tags, notes, confidence }),
     },
   );
   if (!response.ok) {

@@ -8,6 +8,7 @@ interface Problem {
   user_id: string;
   title: string;
   url: string;
+  difficulty: string;
   tags: string[];
   notes: string;
   date_added: string;

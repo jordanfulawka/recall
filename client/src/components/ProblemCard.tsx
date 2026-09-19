@@ -4,6 +4,7 @@ interface Problem {
   id: string;
   title: string;
   url?: string;
+  difficulty: string;
   tags: string[];
   confidence: number;
   date_added: string;
@@ -19,6 +20,12 @@ const confidenceStyles: Record<number, string> = {
   5: 'border-emerald-700 bg-emerald-700 text-white',
 };
 
+const difficultyStyles: Record<string, string> = {
+  easy: 'border-emerald-700 text-emerald-700',
+  medium: 'border-amber-600 text-amber-600',
+  hard: 'border-red-700 text-red-700',
+};
+
 function formatDate(value?: string | null) {
   if (!value) return null;
   return new Date(value).toLocaleDateString(undefined, {
@@ -29,7 +36,8 @@ function formatDate(value?: string | null) {
 }
 
 function ProblemCard({ problem }: { problem: Problem }) {
-  const { title, confidence, tags, date_added, next_review } = problem;
+  const { title, confidence, difficulty, tags, date_added, next_review } =
+    problem;
 
   const navigate = useNavigate();
 
@@ -39,9 +47,20 @@ function ProblemCard({ problem }: { problem: Problem }) {
       onClick={() => navigate(`/review/${problem.id}`)}
     >
       <div className='flex items-start justify-between gap-3'>
-        <span className='text-sm font-semibold text-alabaster hover:underline'>
-          {title}
-        </span>
+        <div className='flex items-center gap-2'>
+          <span className='text-sm font-semibold text-alabaster hover:underline'>
+            {title}
+          </span>
+          {difficulty && (
+            <span
+              className={`rounded-full border px-2 py-0.5 text-xs font-medium capitalize ${
+                difficultyStyles[difficulty] ?? 'border-dusk text-lavender'
+              }`}
+            >
+              {difficulty}
+            </span>
+          )}
+        </div>
 
         <span
           className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border text-xs font-semibold ${

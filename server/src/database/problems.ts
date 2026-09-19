@@ -11,17 +11,19 @@ async function createProblem(
   userId: string,
   title: string,
   url: string,
+  difficulty: string,
   tags: string[],
   notes: string,
   confidence: number,
 ) {
   const { review_interval_days, next_review } = computeSchedule(confidence, 1);
   const text =
-    'INSERT INTO problems(user_id, title, url, tags, notes, confidence, next_review, review_interval_days) VALUES($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *';
+    'INSERT INTO problems(user_id, title, url, difficulty, tags, notes, confidence, next_review, review_interval_days) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *';
   const values = [
     userId,
     title,
     url,
+    difficulty,
     tags,
     notes,
     confidence,

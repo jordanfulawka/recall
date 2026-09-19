@@ -20,6 +20,12 @@ const confidenceColours: Record<number, string> = {
   5: 'text-emerald-700',
 };
 
+const difficultyStyles: Record<string, string> = {
+  easy: 'border-emerald-700 text-emerald-700',
+  medium: 'border-amber-600 text-amber-600',
+  hard: 'border-red-700 text-red-700',
+};
+
 const ratingStyles: Record<number, { idle: string; selected: string }> = {
   1: {
     idle: 'border-red-700 text-red-700 hover:bg-red-700 hover:text-white',
@@ -91,6 +97,7 @@ function ProblemReview() {
     title,
     url,
     notes,
+    difficulty,
     tags,
     confidence,
     date_added,
@@ -155,7 +162,21 @@ function ProblemReview() {
       <div className='flex flex-col gap-5 rounded-lg border border-dusk/40 bg-prussian p-6 shadow-sm'>
         <div className='flex items-start justify-between gap-4'>
           <div className='flex flex-col gap-1.5'>
-            <h1 className='text-xl font-semibold text-alabaster'>{title}</h1>
+            <div className='flex items-center gap-2'>
+              <h1 className='text-xl font-semibold text-alabaster'>
+                {title}
+              </h1>
+              {difficulty && (
+                <span
+                  className={`rounded-full border px-2 py-0.5 text-xs font-medium capitalize ${
+                    difficultyStyles[difficulty] ??
+                    'border-dusk text-lavender'
+                  }`}
+                >
+                  {difficulty}
+                </span>
+              )}
+            </div>
             {url && (
               <a
                 href={url}
