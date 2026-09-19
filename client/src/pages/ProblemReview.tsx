@@ -315,9 +315,17 @@ function ProblemReview() {
                 </p>
               </div>
             </div>
-            <div>
-              <button onClick={() => navigate(-1)}>back to list</button>
-              <button onClick={() => navigate(`/history/${id}`)}>
+            <div className='flex justify-end gap-2 pt-3'>
+              <button
+                onClick={() => navigate(-1)}
+                className='rounded-md border border-dusk/60 px-3 py-1.5 text-sm font-medium text-lavender transition hover:bg-dusk/20 hover:text-alabaster'
+              >
+                back to list
+              </button>
+              <button
+                onClick={() => navigate(`/history/${id}`)}
+                className='rounded-md border border-emerald-700 bg-emerald-700 px-3 py-1.5 text-sm font-medium text-white transition hover:bg-emerald-600'
+              >
                 history
               </button>
             </div>

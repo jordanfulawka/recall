@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import { login as apiLogin } from '../lib/api';
+import { login as apiLogin, register as apiRegister } from '../lib/api';
 import { useAuth } from '../contexts/AuthProvider';
 import { useNavigate } from 'react-router';
 
 function Login() {
+  const [mode, setMode] = useState<'login' | 'register'>('login');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -13,15 +14,26 @@ function Login() {
 
   const { login } = useAuth();
 
-  async function handleLogin(e: React.FormEvent) {
+  const isLogin = mode === 'login';
+
+  function toggleMode() {
+    setMode(isLogin ? 'register' : 'login');
+    setError(null);
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
     setLoading(true);
     e.preventDefault();
     try {
-      const { token } = await apiLogin(username, password);
+      const { token } = isLogin
+        ? await apiLogin(username, password)
+        : await apiRegister(username, password);
       login(token);
       navigate('/all');
     } catch (err) {
-      setError('Could not log you in');
+      setError(
+        isLogin ? 'Could not log you in' : 'Could not create your account',
+      );
     } finally {
       setLoading(false);
     }
@@ -30,10 +42,12 @@ function Login() {
   return (
     <div className='flex min-h-screen items-center justify-center bg-ink'>
       <form
-        onSubmit={handleLogin}
+        onSubmit={handleSubmit}
         className='w-full max-w-sm space-y-4 rounded-lg border border-dusk/40 bg-prussian p-8 shadow-sm'
       >
-        <h1 className='text-xl font-semibold text-alabaster'>Log in</h1>
+        <h1 className='text-xl font-semibold text-alabaster'>
+          {isLogin ? 'Log in' : 'Create an account'}
+        </h1>
 
         <div className='space-y-1'>
           <label
@@ -74,8 +88,25 @@ function Login() {
           disabled={loading}
           className='w-full rounded-md bg-alabaster px-3 py-2 text-sm font-medium text-ink transition hover:bg-lavender disabled:opacity-50'
         >
-          {loading ? 'Logging in...' : 'Log in'}
+          {loading
+            ? isLogin
+              ? 'Logging in...'
+              : 'Creating account...'
+            : isLogin
+              ? 'Log in'
+              : 'Create account'}
         </button>
+
+        <p className='text-center text-sm text-lavender'>
+          {isLogin ? "Don't have an account? " : 'Already have an account? '}
+          <button
+            type='button'
+            onClick={toggleMode}
+            className='font-medium text-alabaster underline-offset-2 hover:underline'
+          >
+            {isLogin ? 'Sign up' : 'Log in'}
+          </button>
+        </p>
       </form>
     </div>
   );

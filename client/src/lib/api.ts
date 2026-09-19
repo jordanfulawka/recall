@@ -16,6 +16,24 @@ async function login(username: string, password: string) {
   return response.json();
 }
 
+async function register(username: string, password: string) {
+  const response = await fetch(
+    `${import.meta.env.VITE_BASE_URL}/api/v1/auth/register`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ username, password }),
+    },
+  );
+  if (!response.ok) {
+    const data = await response.json();
+    throw new Error(data.error);
+  }
+  return response.json();
+}
+
 async function createProblem(
   token: string,
   title: string,
@@ -176,6 +194,7 @@ async function getStats(token: string) {
 
 export {
   login,
+  register,
   createProblem,
   getProblems,
   getDueProblems,
