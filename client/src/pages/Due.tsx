@@ -6,18 +6,22 @@ import ProblemCard from '../components/ProblemCard';
 
 function Due() {
   const [dueProblems, setDueProblems] = useState<Problem[]>([]);
+  const [loading, setLoading] = useState(false);
 
   const { token } = useAuth();
 
   useEffect(() => {
     async function fetchDueProblems() {
       try {
+        setLoading(true);
         if (!token) return;
         const { dueProblems: problems } = await getDueProblems(token);
         console.log(problems);
         setDueProblems(problems);
       } catch (err) {
         console.log(err);
+      } finally {
+        setLoading(false);
       }
     }
     fetchDueProblems();
@@ -25,7 +29,11 @@ function Due() {
 
   return (
     <div className='flex flex-col gap-5'>
-      {dueProblems.length > 0 ? (
+      {loading ? (
+        <div className='flex items-center justify-center py-16'>
+          <div className='h-8 w-8 animate-spin rounded-full border-2 border-dusk/40 border-t-alabaster' />
+        </div>
+      ) : dueProblems.length > 0 ? (
         dueProblems.map((problem) => (
           <ProblemCard problem={problem} key={problem.id} />
         ))
