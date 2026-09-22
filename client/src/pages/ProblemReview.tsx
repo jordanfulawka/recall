@@ -215,14 +215,11 @@ function ProblemReview() {
         <div className='flex items-start justify-between gap-4'>
           <div className='flex flex-col gap-1.5'>
             <div className='flex items-center gap-2'>
-              <h1 className='text-xl font-semibold text-alabaster'>
-                {title}
-              </h1>
+              <h1 className='text-xl font-semibold text-alabaster'>{title}</h1>
               {difficulty && (
                 <span
                   className={`rounded-full border px-2 py-0.5 text-xs font-medium capitalize ${
-                    difficultyStyles[difficulty] ??
-                    'border-dusk text-lavender'
+                    difficultyStyles[difficulty] ?? 'border-dusk text-lavender'
                   }`}
                 >
                   {difficulty}
@@ -338,6 +335,13 @@ function ProblemReview() {
                 </button>
               ))}
             </div>
+            <button
+              type='button'
+              onClick={() => navigate(`/history/${id}`)}
+              className='self-start rounded-md border border-dusk/60 px-3 py-1.5 text-xs font-medium text-lavender transition hover:border-lavender/60 hover:bg-dusk/20 hover:text-alabaster'
+            >
+              View problem review history
+            </button>
           </div>
         )}
 
