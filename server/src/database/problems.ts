@@ -101,7 +101,7 @@ async function getProblemsByUserId(userId: string) {
 
 async function getDueProblemsByUserId(userId: string) {
   const text =
-    'SELECT * FROM problems WHERE user_id = $1 AND next_review::date <= current_date';
+    'SELECT * FROM problems WHERE user_id = $1 AND next_review::date <= current_date order by next_review';
   const values = [userId];
 
   const result = await pool.query(text, values);
