@@ -36,7 +36,7 @@ function ReviewCard({ review }: { review: Review }) {
           {formatDate(reviewed_at)}
         </span>
         <p className='text-sm whitespace-pre-wrap text-alabaster'>
-          {notes || 'No notes left.'}
+          {notes || 'No notes.'}
         </p>
       </div>
     </div>
